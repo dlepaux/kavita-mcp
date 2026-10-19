@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "labels": ["dependencies"],
+  "description": "minimumReleaseAge holds every update for 7 days, because a freshly published release is the prime window for a compromised package.",
+  "minimumReleaseAge": "7 days",
+  "packageRules": [
+    {
+      "description": "One pull request for all GitHub Actions updates; their SHA pins are kept and refreshed.",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Rust patch updates in one pull request.",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["patch"],
+      "groupName": "rust patch updates"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+[package]
+name = "kavita-mcp"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "MCP server letting each person in a household search their Kavita libraries and send a book to their Kindle, as themselves, after a confirmation."
+publish = false
+
+[dependencies]
+rmcp = { version = "3.5.1", features = [
+  "server",
+  "macros",
+  "transport-streamable-http-server",
+  "elicitation",
+] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal", "time", "sync"] }
+axum = "0.8"
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls", "query"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# serde_yaml is deprecated and serde_yml carries RUSTSEC-2025-0068; serde_norway is the maintained fork.
+serde_norway = "0.9"
+sha2 = "0.10"
+subtle = "2"
+hex = "0.4"
+prometheus = { version = "0.14", default-features = false }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+wiremock = "0.6"
+rmcp = { version = "3.5.1", features = ["client", "transport-streamable-http-client-reqwest"] }

@@ -1,0 +1,23 @@
+{
+  "decimal_mark": ".",
+  "size": "{n} MB",
+  "admin_named": "Tell {admin}.",
+  "admin_unnamed": "Tell your Kavita admin.",
+  "nothing_found": "I found nothing for \"{query}\" in your libraries.",
+  "unknown_handle": "I can only send a book from your last search. Search for it again.",
+  "no_kindle_named": "You don't have a Kindle set up in Kavita. {admin} can add one.",
+  "no_kindle_unnamed": "You don't have a Kindle set up in Kavita. Your Kavita admin can add one.",
+  "kindle_in_list": "« {name} »",
+  "which_kindle": "You have several Kindles: {list}. Which one? (call send_to_kindle with kindle)",
+  "bad_format": "\"{title}\" is a {format} file; a Kindle only takes EPUB or PDF.",
+  "too_large": "\"{title}\" is {size}; the limit is {limit}.",
+  "email_off": "Sending to a Kindle is switched off in Kavita right now. {tell}",
+  "confirm": "Send \"{title}\" ({format}, {size}) to your Kindle \"{device}\"? ✅ to confirm, ❌ to cancel.",
+  "not_sent": "Not sent.",
+  "sent": "Sent. It will be on your Kindle in a few minutes.",
+  "kavita_unreachable": "Kavita isn't answering, try again in a few minutes.",
+  "kavita_key_rejected": "Kavita didn't accept my access. {tell}",
+  "kavita_problem": "Kavita ran into a problem. {tell}",
+  "send_refused": "Kavita refused to send it. {tell}",
+  "no_elicitation": "This chat cannot ask you to confirm, so nothing was sent."
+}

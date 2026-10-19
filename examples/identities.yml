@@ -1,0 +1,14 @@
+# One entry per person who may use kavita-mcp. A made-up household: replace every value.
+#
+# token_sha256 is the SHA-256 of the bearer token that person's chat client sends; the token itself
+# never goes in this file. Make one with:
+#   token=$(openssl rand -hex 32); printf %s "$token" | sha256sum
+# The two hashes below are of the tokens "example-token-alice" and "example-token-bob": do not deploy them.
+- profile: alice          # [a-z0-9], 1 to 32 characters; names the key variable KAVITA_MCP_KEY_ALICE
+  token_sha256: 10fe24a75b300e787dcd965dd547e18d561b688877428161ebdde3149430bdba  # gitleaks:allow (example hash, not a secret)
+  language: fr            # a code from locales/ (en, fr): the language of every sentence this person reads
+  libraries: [Romans, Comics]   # Kavita library names, exactly as Kavita shows them
+- profile: bob
+  token_sha256: 3af3645f8d45bbf65decdb11954254d92c485a1e08f25f0ea824565eb95e6724  # gitleaks:allow (example hash, not a secret)
+  language: en
+  libraries: [Fiction]

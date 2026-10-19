@@ -1,0 +1,100 @@
+## en admin=None
+0 MB
+2.1 MB
+25 MB
+41 MB
+I found nothing for "Le Petit Prince" in your libraries.
+I found nothing for "{title} {admin}" in your libraries.
+I can only send a book from your last search. Search for it again.
+You don't have a Kindle set up in Kavita. Your Kavita admin can add one.
+You have several Kindles: « Kindle ». Which one? (call send_to_kindle with kindle)
+You have several Kindles: « Kindle d'Alice », « Bob's Kindle ». Which one? (call send_to_kindle with kindle)
+"Watchmen" is a CBZ file; a Kindle only takes EPUB or PDF.
+"{title} {admin}" is a MOBI file; a Kindle only takes EPUB or PDF.
+"Les Misérables" is 41 MB; the limit is 25 MB.
+Sending to a Kindle is switched off in Kavita right now. Tell your Kavita admin.
+Send "The Midnight Library" (EPUB, 2.1 MB) to your Kindle "Alice's Kindle"? ✅ to confirm, ❌ to cancel.
+Send "{title} {admin}" (PDF, 1 MB) to your Kindle "{title} {admin}"? ✅ to confirm, ❌ to cancel.
+Not sent.
+Sent. It will be on your Kindle in a few minutes.
+Kavita isn't answering, try again in a few minutes.
+Kavita didn't accept my access. Tell your Kavita admin.
+Kavita ran into a problem. Tell your Kavita admin.
+Kavita ran into a problem. Tell your Kavita admin.
+Kavita refused to send it. Tell your Kavita admin.
+This chat cannot ask you to confirm, so nothing was sent.
+## en admin=Some("Bob")
+0 MB
+2.1 MB
+25 MB
+41 MB
+I found nothing for "Le Petit Prince" in your libraries.
+I found nothing for "{title} {admin}" in your libraries.
+I can only send a book from your last search. Search for it again.
+You don't have a Kindle set up in Kavita. Bob can add one.
+You have several Kindles: « Kindle ». Which one? (call send_to_kindle with kindle)
+You have several Kindles: « Kindle d'Alice », « Bob's Kindle ». Which one? (call send_to_kindle with kindle)
+"Watchmen" is a CBZ file; a Kindle only takes EPUB or PDF.
+"{title} {admin}" is a MOBI file; a Kindle only takes EPUB or PDF.
+"Les Misérables" is 41 MB; the limit is 25 MB.
+Sending to a Kindle is switched off in Kavita right now. Tell Bob.
+Send "The Midnight Library" (EPUB, 2.1 MB) to your Kindle "Alice's Kindle"? ✅ to confirm, ❌ to cancel.
+Send "{title} {admin}" (PDF, 1 MB) to your Kindle "{title} {admin}"? ✅ to confirm, ❌ to cancel.
+Not sent.
+Sent. It will be on your Kindle in a few minutes.
+Kavita isn't answering, try again in a few minutes.
+Kavita didn't accept my access. Tell Bob.
+Kavita ran into a problem. Tell Bob.
+Kavita ran into a problem. Tell Bob.
+Kavita refused to send it. Tell Bob.
+This chat cannot ask you to confirm, so nothing was sent.
+## fr admin=None
+0 Mo
+2,1 Mo
+25 Mo
+41 Mo
+Je ne trouve rien pour « Le Petit Prince » dans tes bibliothèques.
+Je ne trouve rien pour « {title} {admin} » dans tes bibliothèques.
+Je ne peux envoyer qu'un livre de ta dernière recherche. Cherche-le à nouveau.
+Tu n'as pas de Kindle enregistrée dans Kavita. L'admin de Kavita peut en ajouter une.
+Tu as plusieurs Kindle : « Kindle ». Laquelle ? (appelle send_to_kindle avec kindle)
+Tu as plusieurs Kindle : « Kindle d'Alice », « Bob's Kindle ». Laquelle ? (appelle send_to_kindle avec kindle)
+« Watchmen » est un fichier CBZ ; une Kindle ne prend que l'EPUB ou le PDF.
+« {title} {admin} » est un fichier MOBI ; une Kindle ne prend que l'EPUB ou le PDF.
+« Les Misérables » fait 41 Mo ; la limite est de 25 Mo.
+L'envoi vers une Kindle est désactivé dans Kavita pour l'instant. Préviens l'admin de Kavita.
+Envoyer « The Midnight Library » (EPUB, 2,1 Mo) sur ta Kindle « Alice's Kindle » ? ✅ pour confirmer, ❌ pour annuler.
+Envoyer « {title} {admin} » (PDF, 1 Mo) sur ta Kindle « {title} {admin} » ? ✅ pour confirmer, ❌ pour annuler.
+Pas envoyé.
+Envoyé. Il arrive sur ta Kindle d'ici quelques minutes.
+Kavita ne répond pas, réessaie dans quelques minutes.
+Kavita n'a pas accepté mon accès. Préviens l'admin de Kavita.
+Kavita a rencontré un problème. Préviens l'admin de Kavita.
+Kavita a rencontré un problème. Préviens l'admin de Kavita.
+Kavita a refusé de l'envoyer. Préviens l'admin de Kavita.
+Ce chat ne peut pas me demander de confirmation, donc rien n'a été envoyé.
+## fr admin=Some("Bob")
+0 Mo
+2,1 Mo
+25 Mo
+41 Mo
+Je ne trouve rien pour « Le Petit Prince » dans tes bibliothèques.
+Je ne trouve rien pour « {title} {admin} » dans tes bibliothèques.
+Je ne peux envoyer qu'un livre de ta dernière recherche. Cherche-le à nouveau.
+Tu n'as pas de Kindle enregistrée dans Kavita. Bob peut en ajouter une.
+Tu as plusieurs Kindle : « Kindle ». Laquelle ? (appelle send_to_kindle avec kindle)
+Tu as plusieurs Kindle : « Kindle d'Alice », « Bob's Kindle ». Laquelle ? (appelle send_to_kindle avec kindle)
+« Watchmen » est un fichier CBZ ; une Kindle ne prend que l'EPUB ou le PDF.
+« {title} {admin} » est un fichier MOBI ; une Kindle ne prend que l'EPUB ou le PDF.
+« Les Misérables » fait 41 Mo ; la limite est de 25 Mo.
+L'envoi vers une Kindle est désactivé dans Kavita pour l'instant. Préviens Bob.
+Envoyer « The Midnight Library » (EPUB, 2,1 Mo) sur ta Kindle « Alice's Kindle » ? ✅ pour confirmer, ❌ pour annuler.
+Envoyer « {title} {admin} » (PDF, 1 Mo) sur ta Kindle « {title} {admin} » ? ✅ pour confirmer, ❌ pour annuler.
+Pas envoyé.
+Envoyé. Il arrive sur ta Kindle d'ici quelques minutes.
+Kavita ne répond pas, réessaie dans quelques minutes.
+Kavita n'a pas accepté mon accès. Préviens Bob.
+Kavita a rencontré un problème. Préviens Bob.
+Kavita a rencontré un problème. Préviens Bob.
+Kavita a refusé de l'envoyer. Préviens Bob.
+Ce chat ne peut pas me demander de confirmation, donc rien n'a été envoyé.

@@ -1,0 +1,4 @@
+# Pinned so local builds, CI and the image all compile with the same Rust.
+[toolchain]
+channel = "1.94.1"
+components = ["rustfmt", "clippy"]

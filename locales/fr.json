@@ -1,0 +1,23 @@
+{
+  "decimal_mark": ",",
+  "size": "{n} Mo",
+  "admin_named": "Préviens {admin}.",
+  "admin_unnamed": "Préviens l'admin de Kavita.",
+  "nothing_found": "Je ne trouve rien pour « {query} » dans tes bibliothèques.",
+  "unknown_handle": "Je ne peux envoyer qu'un livre de ta dernière recherche. Cherche-le à nouveau.",
+  "no_kindle_named": "Tu n'as pas de Kindle enregistrée dans Kavita. {admin} peut en ajouter une.",
+  "no_kindle_unnamed": "Tu n'as pas de Kindle enregistrée dans Kavita. L'admin de Kavita peut en ajouter une.",
+  "kindle_in_list": "« {name} »",
+  "which_kindle": "Tu as plusieurs Kindle : {list}. Laquelle ? (appelle send_to_kindle avec kindle)",
+  "bad_format": "« {title} » est un fichier {format} ; une Kindle ne prend que l'EPUB ou le PDF.",
+  "too_large": "« {title} » fait {size} ; la limite est de {limit}.",
+  "email_off": "L'envoi vers une Kindle est désactivé dans Kavita pour l'instant. {tell}",
+  "confirm": "Envoyer « {title} » ({format}, {size}) sur ta Kindle « {device} » ? ✅ pour confirmer, ❌ pour annuler.",
+  "not_sent": "Pas envoyé.",
+  "sent": "Envoyé. Il arrive sur ta Kindle d'ici quelques minutes.",
+  "kavita_unreachable": "Kavita ne répond pas, réessaie dans quelques minutes.",
+  "kavita_key_rejected": "Kavita n'a pas accepté mon accès. {tell}",
+  "kavita_problem": "Kavita a rencontré un problème. {tell}",
+  "send_refused": "Kavita a refusé de l'envoyer. {tell}",
+  "no_elicitation": "Ce chat ne peut pas me demander de confirmation, donc rien n'a été envoyé."
+}
