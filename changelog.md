@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/dlepaux/kavita-mcp/compare/v1.0.0...v1.0.1) (2026-10-19)
+
+### Bug Fixes
+
+* tell the model the action tool asks the person itself ([2db6490](https://github.com/dlepaux/kavita-mcp/commit/2db6490c5002bb5a392c2f63ebb311648da0f9b6))
+
 ## 1.0.0 (2026-10-18)
 
 ### Features
