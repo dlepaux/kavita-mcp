@@ -381,4 +381,7 @@ async fn the_tools_are_listed_with_their_hints() {
         send.annotations.as_ref().and_then(|a| a.read_only_hint),
         Some(true)
     );
+    // The tool confirms by itself; a model that asks first makes the person answer twice (eval, 2026-10-19).
+    let said = send.description.as_deref().unwrap_or_default();
+    assert!(said.contains("do not ask them first"), "{said}");
 }

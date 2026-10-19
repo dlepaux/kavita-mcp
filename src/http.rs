@@ -159,7 +159,9 @@ impl KavitaMcp {
     }
 
     #[tool(
-        description = "Send one book to the person's Kindle, after asking them to confirm. Use a handle \
+        description = "Send one book to the person's Kindle. This tool asks the person to confirm \
+                          before anything is sent, so do not ask them first: once it is clear which \
+                          book they want, call it. Use a handle \
                           from search_library; search again rather than guess one. Give kindle only when \
                           the person has several and has said which."
     )]
