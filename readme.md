@@ -15,7 +15,8 @@ file for it: English and French today, and [another is one JSON file](#add-a-lan
 | `send_to_kindle` | Sends one book, named by a handle from the caller's own search, to the caller's Kindle registered in Kavita. It first asks the person to confirm (MCP form elicitation); a client that cannot ask sends nothing. |
 
 Both tools take an optional `language`: the code of the language the person wrote in. What the person
-reads is worded in it when `locales/` has that language, and in their own language otherwise.
+reads is worded in it when `locales/` has that language, and in their own language otherwise. A
+region or script is dropped first (`en-US` is `en`), and a blank value counts as no language.
 
 The caller is whoever holds the bearer token. Their Kavita key, libraries and usual language come
 from configuration; the key and the libraries never come from a tool argument.

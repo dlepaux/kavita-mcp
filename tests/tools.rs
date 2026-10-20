@@ -438,7 +438,7 @@ async fn send_written_in(language: Option<&str>, answer: Answer) -> (Run, Metric
 // Someone on a French profile who writes in English is asked, and answered, in English.
 #[tokio::test]
 async fn an_english_writer_on_a_french_profile_is_asked_and_answered_in_english() {
-    for code in ["en", " EN "] {
+    for code in ["en", " EN ", "en-US", "EN_gb"] {
         let (r, m) = send_written_in(Some(code), Answer::Accepted).await;
         assert_eq!(r.asked, vec!["Send \"Le Bleu des abysses\" (EPUB, 2.1 MB) to your Kindle \"Kindle d'Alice\"? ✅ to confirm, ❌ to cancel."], "{code:?}");
         assert_eq!(
@@ -453,19 +453,22 @@ async fn an_english_writer_on_a_french_profile_is_asked_and_answered_in_english(
 
 #[tokio::test]
 async fn without_a_language_the_profile_s_is_used_and_not_counted() {
-    let (r, m) = send_written_in(None, Answer::Declined).await;
-    assert!(
-        r.asked[0].starts_with("Envoyer « Le Bleu des abysses »"),
-        "{:?}",
-        r.asked
-    );
-    assert_eq!(r.out.unwrap(), "Pas envoyé.");
-    assert_eq!(language_skipped(&m), "0");
+    // Blank is absent, and "fr_FR" is the profile's own language named with a region.
+    for code in [None, Some(""), Some("  "), Some("fr_FR")] {
+        let (r, m) = send_written_in(code, Answer::Declined).await;
+        assert!(
+            r.asked[0].starts_with("Envoyer « Le Bleu des abysses »"),
+            "{code:?} {:?}",
+            r.asked
+        );
+        assert_eq!(r.out.unwrap(), "Pas envoyé.");
+        assert_eq!(language_skipped(&m), "0", "{code:?}");
+    }
 }
 
 #[tokio::test]
 async fn a_language_without_a_locale_falls_back_to_the_profile_s_and_is_counted() {
-    for code in ["de", "", "english"] {
+    for code in ["de", "de-CH", "english", "-en"] {
         let (r, m) = send_written_in(Some(code), Answer::Declined).await;
         assert!(
             r.asked[0].starts_with("Envoyer « Le Bleu des abysses »"),
