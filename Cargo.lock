@@ -899,7 +899,7 @@ dependencies = [
 
 [[package]]
 name = "kavita-mcp"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "axum",
  "hex",
