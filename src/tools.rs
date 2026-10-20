@@ -10,11 +10,13 @@ use std::time::Instant;
 use rmcp::schemars;
 use serde::Deserialize;
 
-use crate::config::Identity;
+use crate::config::{Identity, Language};
 use crate::handles::{Book, Handles};
 use crate::kavita::{Chapter, Format, Kavita, KavitaError, SeriesHit, KINDLE};
 use crate::messages::{self, clean};
-use crate::metrics::{Metrics, KAVITA_FAILURES, REQUEST_FAILURES, SEARCH_SKIPPED, SEND_SKIPPED};
+use crate::metrics::{
+    Metrics, KAVITA_FAILURES, LANGUAGE_SKIPPED, REQUEST_FAILURES, SEARCH_SKIPPED, SEND_SKIPPED,
+};
 
 const MAX_TITLE: usize = 120;
 const MAX_NAME: usize = 64;
@@ -27,6 +29,22 @@ pub(crate) fn fault(metrics: &Metrics, who: &Identity, e: &KavitaError) -> Strin
     metrics.inc(KAVITA_FAILURES, e.kind());
     tracing::warn!(profile = %who.profile, kind = e.kind(), detail = ?e, "Kavita call failed");
     messages::kavita_fault(who.language, who.admin.as_deref(), e)
+}
+
+/// The caller as they wrote this message: in the language the model names when this build has a
+/// locale for it, else in the profile's. No code is the model's own fallback and is not counted; a
+/// code this build lacks is, because the person then reads a language they did not write in.
+fn writing_in(who: &Identity, code: Option<&str>, metrics: &Metrics) -> Identity {
+    let mut who = who.clone();
+    let Some(code) = code else { return who };
+    match Language::parse(&code.trim().to_ascii_lowercase()) {
+        Some(lang) => who.language = lang,
+        None => {
+            metrics.inc(LANGUAGE_SKIPPED, "unsupported_language");
+            tracing::info!(profile = %who.profile, code = %clean(code, 16), "no locale for the named language, using the profile's");
+        }
+    }
+    who
 }
 
 /// One sendable unit per chapter. Several files: one format only if all agree, and their sizes add up,
@@ -62,8 +80,10 @@ pub async fn search_library(
     handles: &Handles,
     who: &Identity,
     query: &str,
+    language: Option<&str>,
     limit: u64,
 ) -> Result<String, String> {
+    let who = &writing_in(who, language, metrics);
     let query = clean(query, MAX_QUERY);
     let hits = kavita
         .search(&who.kavita_key, &query)
@@ -135,6 +155,10 @@ pub struct SendArgs {
     /// The Kindle's name, only when the person has several.
     #[serde(default)]
     pub kindle: Option<String>,
+    /// The ISO 639-1 code of the language the person wrote their message in, such as "en". Everything
+    /// this tool says to the person is worded in it; without it, in their usual language.
+    #[serde(default)]
+    pub language: Option<String>,
 }
 
 fn skipped(metrics: &Metrics, kind: &str, text: String) -> Result<String, String> {
@@ -163,6 +187,7 @@ where
     F: FnOnce(String) -> Fut,
     Fut: Future<Output = Answer>,
 {
+    let who = &writing_in(who, args.language.as_deref(), metrics);
     let (l, admin) = (who.language, who.admin.as_deref());
     if !can_ask {
         metrics.inc(REQUEST_FAILURES, "elicitation_unsupported");

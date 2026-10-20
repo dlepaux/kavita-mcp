@@ -76,7 +76,7 @@ async fn search_lists_books_with_handles_and_no_ids() {
         Language::parse("fr").unwrap(),
         &["Fiction", "Comics"],
     );
-    let out = search_library(&k, &m, &h, &me, "abysses", LIMIT)
+    let out = search_library(&k, &m, &h, &me, "abysses", None, LIMIT)
         .await
         .unwrap();
     let lines: Vec<_> = out.lines().collect();
@@ -116,7 +116,7 @@ async fn a_result_outside_the_configured_libraries_is_dropped_and_counted() {
         Handles::default(),
     );
     let me = who("alice", Language::parse("fr").unwrap(), &["Fiction"]);
-    let out = search_library(&k, &m, &h, &me, "abysses", LIMIT)
+    let out = search_library(&k, &m, &h, &me, "abysses", None, LIMIT)
         .await
         .unwrap();
     assert!(!out.contains("Atlas") && !out.contains("Comics"), "{out}");
@@ -145,7 +145,7 @@ async fn no_hit_says_so_in_the_persons_language() {
     );
     // Every hit outside the grant: the person still gets a sentence, not an empty answer.
     let me = who("bob", Language::parse("en").unwrap(), &["Classics"]);
-    let out = search_library(&k, &m, &h, &me, "abysses", LIMIT)
+    let out = search_library(&k, &m, &h, &me, "abysses", None, LIMIT)
         .await
         .unwrap();
     assert_eq!(out, "I found nothing for \"abysses\" in your libraries.");
@@ -176,6 +176,7 @@ async fn a_multi_file_chapter_is_sendable_only_when_every_file_matches() {
         &h,
         &who("bob", Language::parse("en").unwrap(), &["Classics"]),
         "split",
+        None,
         LIMIT,
     )
     .await
@@ -210,6 +211,7 @@ async fn a_kavita_fault_during_search_is_counted_and_worded() {
         &h,
         &who("bob", Language::parse("en").unwrap(), &["Classics"]),
         "x",
+        None,
         LIMIT,
     )
     .await
@@ -240,6 +242,7 @@ async fn a_kavita_5xx_during_search_is_not_worded_as_a_refused_send() {
         &h,
         &who("bob", Language::parse("en").unwrap(), &["Classics"]),
         "x",
+        None,
         LIMIT,
     )
     .await
@@ -312,7 +315,7 @@ async fn sends(s: &MockServer) -> Vec<serde_json::Value> {
 
 /// Searches as `me`, then returns the handle of the book whose line contains `title`.
 async fn handle_for(k: &Kavita, m: &Metrics, h: &Handles, me: &Identity, title: &str) -> String {
-    let out = search_library(k, m, h, me, "q", LIMIT).await.unwrap();
+    let out = search_library(k, m, h, me, "q", None, LIMIT).await.unwrap();
     out.lines()
         .find(|l| l.contains(title))
         .map(|l| l[7..13].to_string())
@@ -333,12 +336,27 @@ async fn send(
     m: &Metrics,
     h: &Handles,
 ) -> Run {
+    send_in(s, me, handle, kindle, None, answer, m, h).await
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn send_in(
+    s: &MockServer,
+    me: &Identity,
+    handle: String,
+    kindle: Option<&str>,
+    language: Option<&str>,
+    answer: Option<Answer>,
+    m: &Metrics,
+    h: &Handles,
+) -> Run {
     let k = Kavita::new(&s.uri(), Duration::from_secs(5));
     let asked = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
     let log = asked.clone();
     let args = SendArgs {
         handle,
         kindle: kindle.map(str::to_string),
+        language: language.map(str::to_string),
     };
     let out = send_to_kindle(
         &k,
@@ -391,6 +409,109 @@ async fn the_happy_path_asks_then_sends_exactly_one_chapter() {
     );
 }
 
+// ---- the language the person wrote in ----
+
+fn language_skipped(m: &Metrics) -> String {
+    counter(
+        m,
+        "kavita_mcp_language_skipped_total",
+        "unsupported_language",
+    )
+}
+
+/// Searches as the French-profile person, then sends in `language`, answering `answer`.
+async fn send_written_in(language: Option<&str>, answer: Answer) -> (Run, Metrics) {
+    let s = sendable(one_kindle(), true, 200).await;
+    let (m, h, me) = (Metrics::new(), Handles::default(), alice());
+    let x = handle_for(
+        &Kavita::new(&s.uri(), Duration::from_secs(5)),
+        &m,
+        &h,
+        &me,
+        "abysses",
+    )
+    .await;
+    let r = send_in(&s, &me, x, None, language, Some(answer), &m, &h).await;
+    (r, m)
+}
+
+// Someone on a French profile who writes in English is asked, and answered, in English.
+#[tokio::test]
+async fn an_english_writer_on_a_french_profile_is_asked_and_answered_in_english() {
+    for code in ["en", " EN "] {
+        let (r, m) = send_written_in(Some(code), Answer::Accepted).await;
+        assert_eq!(r.asked, vec!["Send \"Le Bleu des abysses\" (EPUB, 2.1 MB) to your Kindle \"Kindle d'Alice\"? ✅ to confirm, ❌ to cancel."], "{code:?}");
+        assert_eq!(
+            r.out.unwrap(),
+            "Sent. It will be on your Kindle in a few minutes."
+        );
+        assert_eq!(language_skipped(&m), "0");
+    }
+    let (r, _) = send_written_in(Some("en"), Answer::Declined).await;
+    assert_eq!(r.out.unwrap(), "Not sent.");
+}
+
+#[tokio::test]
+async fn without_a_language_the_profile_s_is_used_and_not_counted() {
+    let (r, m) = send_written_in(None, Answer::Declined).await;
+    assert!(
+        r.asked[0].starts_with("Envoyer « Le Bleu des abysses »"),
+        "{:?}",
+        r.asked
+    );
+    assert_eq!(r.out.unwrap(), "Pas envoyé.");
+    assert_eq!(language_skipped(&m), "0");
+}
+
+#[tokio::test]
+async fn a_language_without_a_locale_falls_back_to_the_profile_s_and_is_counted() {
+    for code in ["de", "", "english"] {
+        let (r, m) = send_written_in(Some(code), Answer::Declined).await;
+        assert!(
+            r.asked[0].starts_with("Envoyer « Le Bleu des abysses »"),
+            "{code:?}"
+        );
+        assert_eq!(r.out.unwrap(), "Pas envoyé.");
+        assert_eq!(language_skipped(&m), "1", "{code:?}");
+    }
+}
+
+#[tokio::test]
+async fn search_words_what_the_person_reads_in_the_language_they_wrote_in() {
+    let s = library().await;
+    let (k, m, h) = (
+        Kavita::new(&s.uri(), Duration::from_secs(5)),
+        Metrics::new(),
+        Handles::default(),
+    );
+    let me = alice();
+    let out = search_library(&k, &m, &h, &me, "abysses", Some("en"), LIMIT)
+        .await
+        .unwrap();
+    assert!(out.lines().next().unwrap().contains("2.1 MB"), "{out}");
+    // Nothing in the grant: the sentence the person reads follows the language too.
+    let outside = who("alice", Language::parse("fr").unwrap(), &["Classics"]);
+    let none = search_library(&k, &m, &h, &outside, "abysses", Some("en"), LIMIT)
+        .await
+        .unwrap();
+    assert_eq!(none, "I found nothing for \"abysses\" in your libraries.");
+    assert_eq!(language_skipped(&m), "0");
+    let fallback = search_library(&k, &m, &h, &outside, "abysses", Some("de"), LIMIT)
+        .await
+        .unwrap();
+    assert!(fallback.starts_with("Je n"), "{fallback}");
+    assert_eq!(language_skipped(&m), "1");
+}
+
+#[test]
+fn language_is_optional_in_the_arguments() {
+    let args: SendArgs = serde_json::from_value(json!({"handle": "abc123"})).unwrap();
+    assert_eq!(args.language, None);
+    let args: SendArgs =
+        serde_json::from_value(json!({"handle": "abc123", "language": "en"})).unwrap();
+    assert_eq!(args.language.as_deref(), Some("en"));
+}
+
 #[tokio::test]
 async fn a_decline_or_no_answer_sends_nothing() {
     for answer in [Answer::Declined, Answer::NoAnswer] {
@@ -428,6 +549,7 @@ async fn an_accept_after_the_call_was_cancelled_sends_nothing() {
         SendArgs {
             handle: x,
             kindle: None,
+            language: None,
         },
         LIMIT,
         true,
@@ -571,6 +693,7 @@ async fn a_file_at_exactly_the_limit_is_refused() {
         SendArgs {
             handle: x,
             kindle: None,
+            language: None,
         },
         2_202_009,
         true,

@@ -4,8 +4,8 @@ An [MCP](https://modelcontextprotocol.io) server that lets each person in a hous
 [Kavita](https://www.kavitareader.com) libraries from a chat, and send one book to their Kindle. It
 acts as that person, with their own Kavita API key, and sends nothing until they confirm in the chat.
 
-Every sentence a person reads is in their own language, chosen per person: English and French today,
-and [another is one JSON file](#add-a-language).
+Every sentence a person reads is in the language they wrote in, or in their own when this build has no
+file for it: English and French today, and [another is one JSON file](#add-a-language).
 
 ## Tools
 
@@ -14,8 +14,11 @@ and [another is one JSON file](#add-a-language).
 | `search_library` | Up to 10 books matching a title or series in the caller's libraries, each with a short handle, its library, format, size and whether it can go to a Kindle. Read-only. |
 | `send_to_kindle` | Sends one book, named by a handle from the caller's own search, to the caller's Kindle registered in Kavita. It first asks the person to confirm (MCP form elicitation); a client that cannot ask sends nothing. |
 
-The caller is whoever holds the bearer token. Their Kavita key, language and libraries come from
-configuration, never from a tool argument.
+Both tools take an optional `language`: the code of the language the person wrote in. What the person
+reads is worded in it when `locales/` has that language, and in their own language otherwise.
+
+The caller is whoever holds the bearer token. Their Kavita key, libraries and usual language come
+from configuration; the key and the libraries never come from a tool argument.
 
 ## Routes
 
@@ -127,6 +130,7 @@ read the first increase.
 | `kavita_mcp_auth_failures_total` | `mcp_token` |
 | `kavita_mcp_search_skipped_total` | `library_not_granted` (Kavita and the configuration disagree: worth an alert) |
 | `kavita_mcp_send_skipped_total` | `unknown_handle`, `no_kindle`, `format`, `too_large`, `declined` (user outcomes) |
+| `kavita_mcp_language_skipped_total` | `unsupported_language` (the model named a language with no file in `locales/`, so the person read their own) |
 
 ## Development
 

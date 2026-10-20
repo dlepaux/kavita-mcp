@@ -1,4 +1,4 @@
-//! The five counters. Each (counter, kind) series exists from start-up at 0, so the first
+//! The six counters. Each (counter, kind) series exists from start-up at 0, so the first
 //! failure is an `increase()` the alert rules can see.
 
 use prometheus::{Encoder, IntCounterVec, Opts, Registry, TextEncoder};
@@ -8,10 +8,12 @@ pub const REQUEST_FAILURES: &str = "kavita_mcp_request_failures_total";
 pub const AUTH_FAILURES: &str = "kavita_mcp_auth_failures_total";
 pub const SEARCH_SKIPPED: &str = "kavita_mcp_search_skipped_total";
 pub const SEND_SKIPPED: &str = "kavita_mcp_send_skipped_total";
+pub const LANGUAGE_SKIPPED: &str = "kavita_mcp_language_skipped_total";
 
 /// send_skipped is user outcomes, not worth an alert; search_skipped is worth one, because a drop means
-/// Kavita and the configured grant disagree.
-const COUNTERS: [(&str, &str, &[&str]); 5] = [
+/// Kavita and the configured grant disagree. language_skipped is a person answered in their profile's
+/// language instead of the one the model named: rare, and each one is a language this build could add.
+const COUNTERS: [(&str, &str, &[&str]); 6] = [
     (
         KAVITA_FAILURES,
         "Kavita calls that failed",
@@ -44,6 +46,11 @@ const COUNTERS: [(&str, &str, &[&str]); 5] = [
             "too_large",
             "declined",
         ],
+    ),
+    (
+        LANGUAGE_SKIPPED,
+        "Tool calls whose named language this build has no locale for, so the profile's was used",
+        &["unsupported_language"],
     ),
 ];
 
@@ -116,7 +123,7 @@ mod tests {
                 assert!(text.contains(&line), "missing {line}");
             }
         }
-        assert_eq!(COUNTERS.iter().map(|c| c.2.len()).sum::<usize>(), 13);
+        assert_eq!(COUNTERS.iter().map(|c| c.2.len()).sum::<usize>(), 14);
     }
 
     #[test]
