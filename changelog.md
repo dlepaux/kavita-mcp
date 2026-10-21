@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/dlepaux/kavita-mcp/compare/v1.0.4...v1.1.0) (2026-10-21)
+
+### Features
+
+* word what the person reads in the language they wrote in ([#6](https://github.com/dlepaux/kavita-mcp/issues/6)) ([0e91f78](https://github.com/dlepaux/kavita-mcp/commit/0e91f78b7d0572c1a0c1f2446c1ebf3590959a9d))
+
 ## [1.0.4](https://github.com/dlepaux/kavita-mcp/compare/v1.0.3...v1.0.4) (2026-10-20)
 
 ## [1.0.3](https://github.com/dlepaux/kavita-mcp/compare/v1.0.2...v1.0.3) (2026-10-20)

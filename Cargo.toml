@@ -1,6 +1,6 @@
 [package]
 name = "kavita-mcp"
-version = "1.0.4"
+version = "1.1.0"
 edition = "2021"
 license = "MIT"
 description = "MCP server letting each person in a household search their Kavita libraries and send a book to their Kindle, as themselves, after a confirmation."
