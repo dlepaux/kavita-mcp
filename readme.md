@@ -1,5 +1,7 @@
 # kavita-mcp
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/dlepaux-kavita-mcp-da6n4s?v=50decdc9e71c09a547499a3b7e310971)](https://m8ven.ai/mcp/dlepaux-kavita-mcp-da6n4s?s=readme)
+
 An [MCP](https://modelcontextprotocol.io) server that lets each person in a household search their own
 [Kavita](https://www.kavitareader.com) libraries from a chat, and send one book to their Kindle. It
 acts as that person, with their own Kavita API key, and sends nothing until they confirm in the chat.
