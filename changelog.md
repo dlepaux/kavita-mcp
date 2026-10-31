@@ -1,3 +1,9 @@
+## [1.1.6](https://github.com/dlepaux/kavita-mcp/compare/v1.1.5...v1.1.6) (2026-10-31)
+
+### Performance Improvements
+
+* shorten what kavita-mcp sends the model on every call (HER-59) ([2967527](https://github.com/dlepaux/kavita-mcp/commit/296752798d129c3853ae0fac2b79bfb044283c1f))
+
 ## [1.1.5](https://github.com/dlepaux/kavita-mcp/compare/v1.1.4...v1.1.5) (2026-10-30)
 
 ## [1.1.4](https://github.com/dlepaux/kavita-mcp/compare/v1.1.3...v1.1.4) (2026-10-30)
