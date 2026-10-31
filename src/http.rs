@@ -128,8 +128,7 @@ pub struct SearchArgs {
     // Kavita's series search ignores people, so the schema promises no author search.
     /// A title or a series, as the person said it.
     pub query: String,
-    /// The ISO 639-1 code of the language the person wrote their message in, such as "en". What the
-    /// person reads of the results is worded in it; without it, in their usual language.
+    /// The ISO 639-1 code of the language the person wrote in, such as "en". The results use it.
     #[serde(default)]
     pub language: Option<String>,
 }
@@ -139,8 +138,7 @@ impl KavitaMcp {
     #[tool(
         description = "Search the person's own Kavita libraries. Gives up to 10 books, each with a handle, \
                        title, series, library, format, size and whether it can go to a Kindle. Never show the \
-                       handles to the person. Give language: the code of the language the person wrote in, \
-                       such as \"en\".",
+                       handles to the person.",
         annotations(read_only_hint = true)
     )]
     async fn search_library(
@@ -169,8 +167,7 @@ impl KavitaMcp {
                           before anything is sent, so do not ask them first: once it is clear which \
                           book they want, call it. Use a handle \
                           from search_library; search again rather than guess one. Give kindle only when \
-                          the person has several and has said which. Give language: the code of the \
-                          language the person wrote in, such as \"en\"."
+                          the person has several and has said which."
     )]
     async fn send_to_kindle(
         &self,

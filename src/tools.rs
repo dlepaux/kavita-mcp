@@ -160,8 +160,7 @@ pub struct SendArgs {
     /// The Kindle's name, only when the person has several.
     #[serde(default)]
     pub kindle: Option<String>,
-    /// The ISO 639-1 code of the language the person wrote their message in, such as "en". Everything
-    /// this tool says to the person is worded in it; without it, in their usual language.
+    /// The ISO 639-1 code of the language the person wrote in, such as "en". Replies use it.
     #[serde(default)]
     pub language: Option<String>,
 }
