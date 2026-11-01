@@ -148,7 +148,11 @@ async fn no_hit_says_so_in_the_persons_language() {
     let out = search_library(&k, &m, &h, &me, "abysses", None, LIMIT)
         .await
         .unwrap();
-    assert_eq!(out, "I found nothing for \"abysses\" in your libraries.");
+    assert!(
+        out.starts_with("I found nothing for \"abysses\" in your libraries."),
+        "{out}"
+    );
+    assert!(out.contains("offer to request it"), "{out}");
 }
 
 #[tokio::test]
@@ -497,7 +501,10 @@ async fn search_words_what_the_person_reads_in_the_language_they_wrote_in() {
     let none = search_library(&k, &m, &h, &outside, "abysses", Some("en"), LIMIT)
         .await
         .unwrap();
-    assert_eq!(none, "I found nothing for \"abysses\" in your libraries.");
+    assert!(
+        none.starts_with("I found nothing for \"abysses\" in your libraries."),
+        "{none}"
+    );
     assert_eq!(language_skipped(&m), "0");
     let fallback = search_library(&k, &m, &h, &outside, "abysses", Some("de"), LIMIT)
         .await

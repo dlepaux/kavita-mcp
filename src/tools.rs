@@ -138,7 +138,14 @@ pub async fn search_library(
         }
     }
     if lines.is_empty() {
-        return Ok(messages::nothing_found(who.language, &query));
+        // The model's next step, in the result: Hermes does not pass a server's instructions to the
+        // model (HER-64). In English, as text only the model reads.
+        return Ok(format!(
+            "{}\n\nFor you, not to repeat: this search reads titles and series. Try fewer words, or a \
+             web search for the exact title if you have one. If it is still not here, they do not have it: offer to \
+             request it if you can.",
+            messages::nothing_found(who.language, &query)
+        ));
     }
     Ok(lines.join("\n"))
 }
