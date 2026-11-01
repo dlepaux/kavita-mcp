@@ -1,3 +1,9 @@
+## [1.1.8](https://github.com/dlepaux/kavita-mcp/compare/v1.1.7...v1.1.8) (2026-11-01)
+
+### Bug Fixes
+
+* **search:** leave the model a way on when the library has nothing ([034dcda](https://github.com/dlepaux/kavita-mcp/commit/034dcda4b552c4a5b7533bb0a1ffd2cd9ecc0672))
+
 ## [1.1.7](https://github.com/dlepaux/kavita-mcp/compare/v1.1.6...v1.1.7) (2026-11-01)
 
 ### Bug Fixes
