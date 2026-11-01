@@ -1,3 +1,9 @@
+## [1.1.7](https://github.com/dlepaux/kavita-mcp/compare/v1.1.6...v1.1.7) (2026-11-01)
+
+### Bug Fixes
+
+* **search:** have the model recover from a misremembered title (HER-64) ([b3d3b15](https://github.com/dlepaux/kavita-mcp/commit/b3d3b15a7e6d13824772923f40bba36bb439faa2))
+
 ## [1.1.6](https://github.com/dlepaux/kavita-mcp/compare/v1.1.5...v1.1.6) (2026-10-31)
 
 ### Performance Improvements
