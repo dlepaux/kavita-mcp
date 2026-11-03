@@ -1,3 +1,5 @@
+## [1.1.9](https://github.com/dlepaux/kavita-mcp/compare/v1.1.8...v1.1.9) (2026-11-03)
+
 ## [1.1.8](https://github.com/dlepaux/kavita-mcp/compare/v1.1.7...v1.1.8) (2026-11-01)
 
 ### Bug Fixes
