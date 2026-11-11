@@ -7,7 +7,7 @@ description = "MCP server letting each person in a household search their Kavita
 publish = false
 
 [dependencies]
-rmcp = { version = "3.5.1", features = [
+rmcp = { version = "3.9.0", features = [
   "server",
   "macros",
   "transport-streamable-http-server",
@@ -30,4 +30,4 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
 wiremock = "0.6"
-rmcp = { version = "3.5.1", features = ["client", "transport-streamable-http-client-reqwest"] }
+rmcp = { version = "3.9.0", features = ["client", "transport-streamable-http-client-reqwest"] }
