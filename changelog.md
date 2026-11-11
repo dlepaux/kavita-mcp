@@ -1,3 +1,13 @@
+## [1.2.0](https://github.com/dlepaux/kavita-mcp/compare/v1.1.9...v1.2.0) (2026-11-11)
+
+### Features
+
+* **metrics:** count the sends Kavita accepted ([b2205ea](https://github.com/dlepaux/kavita-mcp/commit/b2205ea2ea1aba29a8b47bb73632be417ae0cf58))
+
+### Bug Fixes
+
+* **deps:** rmcp 3.9, past RUSTSEC-2026-0462 ([0062cad](https://github.com/dlepaux/kavita-mcp/commit/0062cad7b47cdf510670fb789653069389567694))
+
 ## [1.1.9](https://github.com/dlepaux/kavita-mcp/compare/v1.1.8...v1.1.9) (2026-11-03)
 
 ## [1.1.8](https://github.com/dlepaux/kavita-mcp/compare/v1.1.7...v1.1.8) (2026-11-01)
