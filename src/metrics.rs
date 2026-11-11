@@ -1,4 +1,4 @@
-//! The six counters. Each (counter, kind) series exists from start-up at 0, so the first
+//! The seven counters. Each (counter, kind) series exists from start-up at 0, so the first
 //! failure is an `increase()` the alert rules can see.
 
 use prometheus::{Encoder, IntCounterVec, Opts, Registry, TextEncoder};
@@ -9,11 +9,14 @@ pub const AUTH_FAILURES: &str = "kavita_mcp_auth_failures_total";
 pub const SEARCH_SKIPPED: &str = "kavita_mcp_search_skipped_total";
 pub const SEND_SKIPPED: &str = "kavita_mcp_send_skipped_total";
 pub const LANGUAGE_SKIPPED: &str = "kavita_mcp_language_skipped_total";
+pub const SENT: &str = "kavita_mcp_sent_total";
 
 /// send_skipped is user outcomes, not worth an alert; search_skipped is worth one, because a drop means
 /// Kavita and the configured grant disagree. language_skipped is a person answered in their profile's
 /// language instead of the one the model named: rare, and each one is a language this build could add.
-const COUNTERS: [(&str, &str, &[&str]); 6] = [
+/// sent is the only success counter: without it a send Kavita accepted is invisible next to the skips
+/// and faults. Its kind is the destination, never the person: identity stays out of every label.
+const COUNTERS: [(&str, &str, &[&str]); 7] = [
     (
         KAVITA_FAILURES,
         "Kavita calls that failed",
@@ -51,6 +54,11 @@ const COUNTERS: [(&str, &str, &[&str]); 6] = [
         LANGUAGE_SKIPPED,
         "Tool calls whose named language this build has no locale for, so the profile's was used",
         &["unsupported_language"],
+    ),
+    (
+        SENT,
+        "send_to_kindle calls Kavita accepted, by destination",
+        &["kindle"],
     ),
 ];
 
@@ -123,7 +131,7 @@ mod tests {
                 assert!(text.contains(&line), "missing {line}");
             }
         }
-        assert_eq!(COUNTERS.iter().map(|c| c.2.len()).sum::<usize>(), 14);
+        assert_eq!(COUNTERS.iter().map(|c| c.2.len()).sum::<usize>(), 15);
     }
 
     #[test]

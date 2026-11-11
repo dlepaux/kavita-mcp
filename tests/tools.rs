@@ -411,6 +411,11 @@ async fn the_happy_path_asks_then_sends_exactly_one_chapter() {
         sends(&s).await,
         vec![json!({"deviceId": 3, "chapterIds": [10]})]
     );
+    assert_eq!(sent(&m), "1", "a send Kavita accepted is counted once");
+}
+
+fn sent(m: &Metrics) -> String {
+    counter(m, "kavita_mcp_sent_total", "kindle")
 }
 
 // ---- the language the person wrote in ----
@@ -542,6 +547,7 @@ async fn a_decline_or_no_answer_sends_nothing() {
             counter(&m, "kavita_mcp_send_skipped_total", "declined"),
             "1"
         );
+        assert_eq!(sent(&m), "0");
     }
 }
 
@@ -786,6 +792,11 @@ async fn kavitas_send_errors_map_to_kinds_and_never_echo_the_body() {
             counter(&m, "kavita_mcp_kavita_failures_total", kind),
             "1",
             "status {status}"
+        );
+        assert_eq!(
+            sent(&m),
+            "0",
+            "status {status}: Kavita refused, nothing was sent"
         );
     }
 }

@@ -134,6 +134,7 @@ read the first increase.
 | `kavita_mcp_search_skipped_total` | `library_not_granted` (Kavita and the configuration disagree: worth an alert) |
 | `kavita_mcp_send_skipped_total` | `unknown_handle`, `no_kindle`, `format`, `too_large`, `declined` (user outcomes) |
 | `kavita_mcp_language_skipped_total` | `unsupported_language` (the model named a language with no file in `locales/`, so the person read their own) |
+| `kavita_mcp_sent_total` | `kindle` (a send Kavita accepted; no label names the person) |
 
 ## Development
 

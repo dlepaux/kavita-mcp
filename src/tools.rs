@@ -16,6 +16,7 @@ use crate::kavita::{Chapter, Format, Kavita, KavitaError, SeriesHit, KINDLE};
 use crate::messages::{self, clean};
 use crate::metrics::{
     Metrics, KAVITA_FAILURES, LANGUAGE_SKIPPED, REQUEST_FAILURES, SEARCH_SKIPPED, SEND_SKIPPED,
+    SENT,
 };
 
 const MAX_TITLE: usize = 120;
@@ -274,6 +275,8 @@ where
             }
             text => text,
         })?;
+    // Only after Kavita answered 2xx: a refused or failed send was counted as a fault above.
+    metrics.inc(SENT, "kindle");
     tracing::info!(profile = %who.profile, chapter = book.chapter_id, "sent to Kindle");
     Ok(messages::sent(l))
 }
