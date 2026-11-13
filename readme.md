@@ -13,7 +13,7 @@ file for it: English and French today, and [another is one JSON file](#add-a-lan
 
 | Tool | What it does |
 |------|--------------|
-| `search_library` | Up to 10 books matching a title or series in the caller's libraries, each with a short handle, its library, format, size and whether it can go to a Kindle. Read-only. |
+| `search_library` | Up to 10 books matching a title or series in the caller's libraries, each with a short handle, its library, format and size, and, for a person with a Kindle, whether it can go to it. Read-only. |
 | `send_to_kindle` | Sends one book, named by a handle from the caller's own search, to the caller's Kindle registered in Kavita. It first asks the person to confirm (MCP form elicitation); a client that cannot ask sends nothing. |
 
 Both tools take an optional `language`: the code of the language the person wrote in. What the person
@@ -57,7 +57,13 @@ The identities file, one entry per person (see [`examples/identities.yml`](examp
   token_sha256: 10fe24a7…  # SHA-256 of Alice's bearer token, 64 hex characters
   language: fr            # a code from locales/: en, fr
   libraries: [Romans, Comics]   # Kavita library names, exactly as Kavita shows them
+  kindle: true            # optional, default true; false for a person with no Kindle
 ```
+
+With `kindle: false`, search results carry no Kindle field and `send_to_kindle` answers that the
+person has no Kindle, without calling Kavita. Give such a person a chat without `send_to_kindle`:
+search_library's description and the server's instructions never mention a Kindle, so nothing they
+read offers one.
 
 Make a token and its hash with `token=$(openssl rand -hex 32); printf %s "$token" | sha256sum`. The
 token goes to that person's chat client; only the hash goes in the file.

@@ -22,6 +22,15 @@ fn who(profile: &str, language: Language, libraries: &[&str]) -> Identity {
         libraries: libraries.iter().map(|s| s.to_string()).collect(),
         kavita_key: format!("key-{profile}"),
         admin: Some("Carol".into()),
+        kindle: true,
+    }
+}
+
+/// The same person, configured as having no Kindle.
+fn without_kindle(me: Identity) -> Identity {
+    Identity {
+        kindle: false,
+        ..me
     }
 }
 
@@ -105,6 +114,35 @@ async fn search_lists_books_with_handles_and_no_ids() {
             .chapter_id,
         10
     );
+}
+
+#[tokio::test]
+async fn a_person_without_a_kindle_reads_no_kindle_field() {
+    let s = library().await;
+    let (k, m, h) = (
+        Kavita::new(&s.uri(), Duration::from_secs(5)),
+        Metrics::new(),
+        Handles::default(),
+    );
+    let owner = who(
+        "alice",
+        Language::parse("fr").unwrap(),
+        &["Fiction", "Comics"],
+    );
+    let with = search_library(&k, &m, &h, &owner, "abysses", None, LIMIT)
+        .await
+        .unwrap();
+    let without = search_library(&k, &m, &h, &without_kindle(owner), "abysses", None, LIMIT)
+        .await
+        .unwrap();
+    assert!(!without.to_lowercase().contains("kindle"), "{without}");
+    // The line is the owner's line minus its last field: handles differ, the rest must not.
+    let strip = |out: &str| -> Vec<String> { out.lines().map(|l| l[13..].to_string()).collect() };
+    let expected: Vec<String> = strip(&with)
+        .iter()
+        .map(|l| l.rsplit_once(" | kindle: ").unwrap().0.to_string())
+        .collect();
+    assert_eq!(strip(&without), expected);
 }
 
 #[tokio::test]
@@ -636,6 +674,50 @@ async fn no_kindle_is_answered_without_asking() {
             "1"
         );
     }
+}
+
+#[tokio::test]
+async fn a_person_without_a_kindle_is_refused_before_any_kavita_call() {
+    let s = sendable(one_kindle(), true, 200).await;
+    let (m, h) = (Metrics::new(), Handles::default());
+    let owner = who("bob", Language::parse("en").unwrap(), &["Fiction"]);
+    // A real handle, minted while Bob still had a Kindle, so only the flag can refuse it.
+    let x = handle_for(
+        &Kavita::new(&s.uri(), Duration::from_secs(5)),
+        &m,
+        &h,
+        &owner,
+        "abysses",
+    )
+    .await;
+    s.reset().await;
+    let r = send(
+        &s,
+        &without_kindle(owner),
+        x,
+        None,
+        Some(Answer::Accepted),
+        &m,
+        &h,
+    )
+    .await;
+    assert_eq!(
+        r.out.unwrap(),
+        "You don't have a Kindle set up in Kavita. Carol can add one."
+    );
+    assert!(r.asked.is_empty());
+    let asked: Vec<_> = s
+        .received_requests()
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|r| r.url.path().to_string())
+        .collect();
+    assert!(asked.is_empty(), "Kavita was called: {asked:?}");
+    assert_eq!(
+        counter(&m, "kavita_mcp_send_skipped_total", "no_kindle"),
+        "1"
+    );
 }
 
 #[tokio::test]

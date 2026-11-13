@@ -78,6 +78,24 @@ pub fn book_of(series: &SeriesHit, ch: &Chapter) -> Book {
     }
 }
 
+/// One result line, without its handle. The `kindle` field is only for a person who has one: for
+/// anyone else it reads as an offer to send, and the model makes it (HER-85).
+fn book_line(who: &Identity, series: &str, b: &Book, limit: u64) -> String {
+    let line = format!(
+        "| « {} » | series: {} | library: {} | {} | {}",
+        b.title,
+        clean(series, MAX_TITLE),
+        b.library,
+        b.format.label(),
+        messages::size(who.language, b.bytes),
+    );
+    if !who.kindle {
+        return line;
+    }
+    let sendable = b.format.kindle_ok() && b.bytes < limit;
+    format!("{line} | kindle: {}", if sendable { "yes" } else { "no" })
+}
+
 /// # Errors
 /// A Kavita fault, counted, as the person's sentence.
 pub async fn search_library(
@@ -119,19 +137,7 @@ pub async fn search_library(
                 break 'series;
             }
             let b = book_of(s, &ch);
-            let line = format!(
-                "| « {} » | series: {} | library: {} | {} | {} | kindle: {}",
-                b.title,
-                clean(&s.name, MAX_TITLE),
-                b.library,
-                b.format.label(),
-                messages::size(who.language, b.bytes),
-                if b.format.kindle_ok() && b.bytes < limit {
-                    "yes"
-                } else {
-                    "no"
-                },
-            );
+            let line = book_line(who, &s.name, &b, limit);
             lines.push(format!(
                 "handle={} {line}",
                 handles.mint(&who.profile, b, now)
@@ -178,8 +184,9 @@ fn skipped(metrics: &Metrics, kind: &str, text: String) -> Result<String, String
     Ok(text)
 }
 
-/// Checks run in this order and every refusal before the final send sends nothing: elicitation
-/// support, the handle, the Kindle, the format, the size, Kavita's email setting, the confirmation.
+/// Checks run in this order and every refusal before the final send sends nothing: the configured
+/// Kindle flag, elicitation support, the handle, the Kindle in Kavita, the format, the size, Kavita's
+/// email setting, the confirmation.
 ///
 /// # Errors
 /// A Kavita fault, or email switched off, counted, as the person's sentence.
@@ -201,6 +208,11 @@ where
 {
     let who = &writing_in(who, args.language.as_deref(), metrics);
     let (l, admin) = (who.language, who.admin.as_deref());
+    // The chat should not offer this tool to such a person; the server does not rely on it.
+    if !who.kindle {
+        tracing::info!(profile = %who.profile, "send_to_kindle refused: no Kindle configured");
+        return skipped(metrics, "no_kindle", messages::no_kindle(l, admin));
+    }
     if !can_ask {
         metrics.inc(REQUEST_FAILURES, "elicitation_unsupported");
         return Ok(messages::no_elicitation(l));

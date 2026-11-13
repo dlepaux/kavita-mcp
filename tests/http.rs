@@ -33,6 +33,7 @@ fn person(profile: &str, token: &str, language: Language) -> Identity {
         libraries: vec!["Fiction".into()],
         kavita_key: format!("key-{profile}"),
         admin: None,
+        kindle: true,
     }
 }
 
@@ -384,4 +385,35 @@ async fn the_tools_are_listed_with_their_hints() {
     // The tool confirms by itself; a model that asks first makes the person answer twice (eval, 2026-10-19).
     let said = send.description.as_deref().unwrap_or_default();
     assert!(said.contains("do not ask them first"), "{said}");
+
+    // Neither the shared tool list nor the instructions may tell a person without a Kindle about one
+    // (HER-85): the Kindle clause lives on send_to_kindle, the tool such a person is never given.
+    let search_said = search.description.as_deref().unwrap_or_default();
+    assert!(
+        !search_said.to_lowercase().contains("kindle"),
+        "{search_said}"
+    );
+    assert!(said.contains("kindle: no"), "{said}");
+}
+
+#[tokio::test]
+async fn the_instructions_never_mention_a_kindle() {
+    let base = serve(app("http://127.0.0.1:9")).await;
+    let transport = StreamableHttpClientTransport::from_config(
+        StreamableHttpClientTransportConfig::with_uri(format!("{base}/mcp")).auth_header(BOB_TOKEN),
+    );
+    let client = Chat {
+        answer: None,
+        asked: Arc::default(),
+    }
+    .serve(transport)
+    .await
+    .unwrap();
+    let said = client
+        .peer_info()
+        .and_then(|i| i.instructions.clone())
+        .unwrap_or_default();
+    client.cancel().await.ok();
+    assert!(said.contains("search_library"), "{said}");
+    assert!(!said.to_lowercase().contains("kindle"), "{said}");
 }
