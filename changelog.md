@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/dlepaux/kavita-mcp/compare/v1.2.1...v1.3.0) (2026-11-13)
+
+### Features
+
+* **identities:** let an identity have no Kindle ([#15](https://github.com/dlepaux/kavita-mcp/issues/15)) ([e1f6e5e](https://github.com/dlepaux/kavita-mcp/commit/e1f6e5ec3a90e2feaed850b6f4741b4262e87e8f))
+
 ## [1.2.1](https://github.com/dlepaux/kavita-mcp/compare/v1.2.0...v1.2.1) (2026-11-12)
 
 ## [1.2.0](https://github.com/dlepaux/kavita-mcp/compare/v1.1.9...v1.2.0) (2026-11-11)
