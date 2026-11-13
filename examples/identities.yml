@@ -12,3 +12,4 @@
   token_sha256: 3af3645f8d45bbf65decdb11954254d92c485a1e08f25f0ea824565eb95e6724  # gitleaks:allow (example hash, not a secret)
   language: en
   libraries: [Fiction]
+  kindle: false           # optional, default true: Bob has no Kindle, so nothing he reads mentions one

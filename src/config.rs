@@ -38,6 +38,11 @@ pub struct Identity {
     /// Who the person is told to turn to when Kavita needs fixing (`KAVITA_MCP_ADMIN_NAME`), the
     /// same for everyone; `None` words it as "your Kavita admin".
     pub admin: Option<String>,
+    /// Whether this person has a Kindle to send to. Configured, not read from Kavita's devices, so it
+    /// can come from whatever decides whether the chat offers send_to_kindle (the two never disagree)
+    /// and a search costs no extra Kavita call. Without one, search results carry no Kindle field and
+    /// send_to_kindle is refused before Kavita is called.
+    pub kindle: bool,
 }
 
 impl std::fmt::Debug for Identity {
@@ -48,6 +53,7 @@ impl std::fmt::Debug for Identity {
             .field("libraries", &self.libraries)
             .field("kavita_key", &"<redacted>")
             .field("admin", &self.admin)
+            .field("kindle", &self.kindle)
             .finish_non_exhaustive()
     }
 }
@@ -59,6 +65,13 @@ pub struct RawIdentity {
     pub token_sha256: String,
     pub language: Language,
     pub libraries: Vec<String>,
+    /// Absent is `true`: an identities file written before this field keeps today's behaviour.
+    #[serde(default = "yes")]
+    pub kindle: bool,
+}
+
+fn yes() -> bool {
+    true
 }
 
 /// Profiles are `[a-z0-9]+`, so the upper-cased profile is an unambiguous variable name.
@@ -180,6 +193,7 @@ impl Config {
                     language: r.language,
                     libraries: r.libraries,
                     admin: admin.clone(),
+                    kindle: r.kindle,
                 })
             })
             .collect::<Result<Vec<_>, ConfigError>>()?;
@@ -343,6 +357,26 @@ mod tests {
         let c = Config::from_vars(&v).unwrap();
         assert_eq!(c.identities.len(), 2);
         assert_eq!(c.identities[0].admin.as_deref(), Some("Bob"));
+        assert!(c.identities[0].kindle && !c.identities[1].kindle);
+    }
+
+    #[test]
+    fn kindle_defaults_to_yes_and_can_be_switched_off() {
+        let raw = parse_identities(&two_people()).unwrap();
+        assert!(
+            raw.iter().all(|r| r.kindle),
+            "a missing kindle must keep today's behaviour"
+        );
+        let off = two_people().replace("language: fr", "language: fr\n  kindle: false");
+        let mut v = vars(&file("kindle", &off));
+        let c = Config::from_vars(&v).unwrap();
+        assert!(c.identities[0].kindle && !c.identities[1].kindle);
+        let bad = two_people().replace("language: fr", "language: fr\n  kindle: maybe");
+        v.insert("KAVITA_MCP_IDENTITIES".into(), file("kindle-bad", &bad));
+        assert!(
+            Config::from_vars(&v).is_err(),
+            "a non-boolean kindle accepted"
+        );
     }
 
     #[test]
